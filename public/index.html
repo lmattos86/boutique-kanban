@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boutique do Crédito e Consórcio · Kanban</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   BOUTIQUE DO CRÉDITO E CONSÓRCIO — Kanban de Vendas
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:       #0D1B3E;
+  --navy-mid:   #152B5E;
+  --teal:       #1B9C9C;
+  --teal-lt:    #2EC4C4;
+  --white:      #FFFFFF;
+  --gray-bg:    #F0F4F8;
+  --gray-card:  #E8EDF4;
+  --gray-bdr:   #D1D9E6;
+  --gray-txt:   #64748B;
+  --danger:     #EF4444;
+  --success:    #10B981;
+  --warning:    #F59E0B;
+  --radius:     10px;
+  --radius-sm:  6px;
+  --col-w:      280px;
+  --hdr-h:      64px;
+  --kpi-h:      88px;
+  --fil-h:      50px;
+}
+
+html, body { height: 100%; background: var(--gray-bg); color: var(--navy);
+  font-family: 'Inter', system-ui, sans-serif; font-size: 14px; line-height: 1.5; }
+
+/* ── HEADER ──────────────────────────────────────────── */
+.hdr { position: sticky; top: 0; z-index: 200; height: var(--hdr-h);
+  background: var(--navy); display: flex; align-items: center;
+  justify-content: space-between; padding: 0 24px;
+  box-shadow: 0 2px 10px rgba(13,27,62,.5); }
+.hdr-brand { display: flex; align-items: center; gap: 12px; }
+.hdr-logo { width: 36px; height: 36px; background: linear-gradient(135deg,var(--teal),var(--teal-lt));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.hdr-title { font-size: 15px; font-weight: 700; color: #fff; }
+.hdr-sub   { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 1px; }
+.conn-pill { display: flex; align-items: center; gap: 6px; padding: 4px 11px;
+  border-radius: 20px; background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12); font-size: 12px; color: rgba(255,255,255,.55); }
+.conn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gray-txt); }
+.conn-dot.online  { background: var(--success); box-shadow: 0 0 5px rgba(16,185,129,.8); }
+.conn-dot.offline { background: var(--danger);  box-shadow: 0 0 5px rgba(239,68,68,.8); }
+
+/* ── KPIs ────────────────────────────────────────────── */
+.kpi-bar { background: #fff; border-bottom: 1px solid var(--gray-bdr);
+  height: var(--kpi-h); display: flex; align-items: stretch; padding: 0 24px; }
+.kpi { flex: 1; display: flex; flex-direction: column; justify-content: center;
+  padding: 0 20px; border-right: 1px solid var(--gray-bdr); }
+.kpi:last-child { border-right: none; }
+.kpi-lbl { font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--gray-txt); margin-bottom: 4px; }
+.kpi-val { font-size: 20px; font-weight: 700; color: var(--navy); letter-spacing: -.5px; }
+.kpi-val.teal { color: var(--teal); }
+
+/* ── FILTER BAR ──────────────────────────────────────── */
+.fil-bar { background: #fff; border-bottom: 1px solid var(--gray-bdr);
+  height: var(--fil-h); display: flex; align-items: center; padding: 0 24px; gap: 14px; }
+.fil-bar label { font-size: 12px; color: var(--gray-txt); white-space: nowrap; }
+.fil-bar input, .fil-bar select {
+  background: var(--gray-bg); border: 1px solid var(--gray-bdr);
+  border-radius: var(--radius-sm); padding: 6px 10px;
+  font-size: 13px; font-family: inherit; color: var(--navy); }
+.fil-bar input { width: 210px; }
+.fil-bar select { width: 190px; }
+.fil-bar input:focus, .fil-bar select:focus { outline: none; border-color: var(--teal); }
+
+/* ── BOARD ───────────────────────────────────────────── */
+.board-wrap { height: calc(100vh - var(--hdr-h) - var(--kpi-h) - var(--fil-h));
+  overflow-x: auto; overflow-y: hidden; padding: 18px 24px; }
+.board { display: flex; gap: 12px; height: 100%; min-width: max-content; }
+
+/* ── COLUMN ──────────────────────────────────────────── */
+.column { width: var(--col-w); min-width: var(--col-w); background: #fff;
+  border: 1px solid var(--gray-bdr); border-radius: var(--radius);
+  display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 1px 6px rgba(13,27,62,.08); }
+.col-hdr { padding: 11px 12px 8px; border-bottom: 1px solid var(--gray-bdr); flex-shrink: 0; }
+.col-hdr-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.col-title { display: flex; align-items: center; gap: 7px; }
+.col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.col-name { font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--navy); }
+.col-count { font-size: 10px; font-weight: 700; color: #fff;
+  border-radius: 10px; padding: 1px 6px; min-width: 20px; text-align: center; }
+.col-add { background: none; border: none; cursor: pointer; color: var(--gray-txt);
+  font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 4px; }
+.col-add:hover { background: var(--gray-bg); color: var(--navy); }
+.col-vol-lbl { font-size: 10px; color: var(--gray-txt); }
+.col-vol { font-size: 12px; font-weight: 600; color: var(--teal); }
+.col-body { flex: 1; overflow-y: auto; padding: 7px; display: flex;
+  flex-direction: column; gap: 6px; scrollbar-width: thin; }
+.col-body.drag-over { background: rgba(27,156,156,.07);
+  outline: 2px dashed rgba(27,156,156,.4); outline-offset: -2px; border-radius: var(--radius-sm); }
+.col-empty { color: var(--gray-txt); font-size: 11px; font-style: italic;
+  text-align: center; padding: 16px 8px; }
+
+/* ── CARD ────────────────────────────────────────────── */
+.card { background: #fff; border: 1px solid var(--gray-bdr);
+  border-left: 3px solid var(--teal); border-radius: var(--radius-sm);
+  padding: 10px 11px; cursor: pointer;
+  transition: box-shadow .15s, transform .1s;
+  box-shadow: 0 1px 5px rgba(13,27,62,.08); }
+.card:hover { box-shadow: 0 4px 14px rgba(13,27,62,.16); transform: translateY(-1px); }
+.card.dragging { opacity: .4; transform: rotate(2deg) scale(1.02); }
+.card.urgente { border-left-color: var(--danger); }
+.card-name { font-size: 13px; font-weight: 700; color: var(--navy);
+  line-height: 1.3; margin-bottom: 3px; }
+.card-ceo  { font-size: 11px; color: var(--gray-txt); margin-bottom: 6px; }
+.card-row  { display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 5px; }
+.card-val  { font-size: 13px; font-weight: 700; color: var(--teal); }
+.card-seg  { font-size: 10px; color: var(--gray-txt); font-style: italic;
+  max-width: 110px; text-align: right; line-height: 1.2; }
+.card-svcs { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 5px; }
+.svc-tag   { font-size: 9px; font-weight: 700; padding: 1px 5px;
+  border-radius: 8px; background: rgba(27,156,156,.12); color: var(--teal); }
+.urg-tag   { font-size: 9px; font-weight: 700; padding: 1px 6px;
+  border-radius: 8px; background: rgba(239,68,68,.12); color: var(--danger); }
+.card-foot { display: flex; align-items: center; justify-content: space-between;
+  padding-top: 5px; border-top: 1px solid var(--gray-card);
+  font-size: 10px; color: var(--gray-txt); }
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn-primary { display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; background: var(--navy); color: #fff;
+  border: none; border-radius: var(--radius-sm); font-size: 13px;
+  font-weight: 600; cursor: pointer; font-family: inherit; }
+.btn-primary:hover { background: var(--navy-mid); }
+.btn-secondary { display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; background: transparent; color: var(--gray-txt);
+  border: 1px solid var(--gray-bdr); border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
+.btn-secondary:hover { border-color: var(--navy); color: var(--navy); }
+.btn-danger { display: inline-flex; align-items: center; gap: 5px;
+  padding: 8px 16px; background: transparent; color: var(--danger);
+  border: 1px solid rgba(239,68,68,.35); border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; }
+.btn-danger:hover { background: rgba(239,68,68,.08); }
+
+/* ── MODAL ───────────────────────────────────────────── */
+.modal-overlay { display: none; position: fixed; inset: 0;
+  background: rgba(13,27,62,.55); backdrop-filter: blur(3px);
+  z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 12px; width: 100%; max-width: 600px;
+  max-height: 92vh; overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(13,27,62,.35);
+  animation: mIn .18s ease; }
+@keyframes mIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+.modal-hdr { display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px 14px; background: var(--navy); border-radius: 12px 12px 0 0; }
+.modal-title { font-size: 16px; font-weight: 700; color: #fff; }
+.modal-close { background: rgba(255,255,255,.1); border: none; color: #fff;
+  width: 28px; height: 28px; border-radius: 6px; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-close:hover { background: rgba(255,255,255,.2); }
+.modal-form { padding: 18px 22px; display: flex; flex-direction: column; gap: 13px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.full { grid-column: 1/-1; }
+.form-group label { font-size: 11px; font-weight: 600; color: var(--gray-txt);
+  text-transform: uppercase; letter-spacing: .04em; }
+.req { color: var(--danger); }
+.form-group input, .form-group select, .form-group textarea {
+  background: var(--gray-bg); border: 1px solid var(--gray-bdr);
+  border-radius: var(--radius-sm); padding: 8px 10px;
+  font-size: 13px; font-family: inherit; color: var(--navy); width: 100%; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--teal); box-shadow: 0 0 0 2px rgba(27,156,156,.15); }
+.form-group textarea { resize: vertical; min-height: 64px; }
+.chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.chk-item { display: flex; align-items: center; gap: 7px; padding: 6px 9px;
+  border: 1px solid var(--gray-bdr); border-radius: var(--radius-sm); cursor: pointer; }
+.chk-item:hover { border-color: var(--teal); }
+.chk-item input { accent-color: var(--teal); cursor: pointer; }
+.chk-item span { font-size: 12px; color: var(--navy); }
+.modal-footer { display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0 2px; border-top: 1px solid var(--gray-bdr); margin-top: 2px; }
+.modal-footer-right { display: flex; gap: 8px; margin-left: auto; }
+
+/* ── TOAST ───────────────────────────────────────────── */
+.toast { position: fixed; bottom: 22px; right: 22px; z-index: 3000;
+  padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px;
+  font-weight: 500; color: #fff; background: var(--navy);
+  border-left: 3px solid var(--teal);
+  box-shadow: 0 6px 20px rgba(13,27,62,.3);
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .22s, transform .22s; pointer-events: none; max-width: 300px; }
+.toast.show { opacity: 1; transform: none; }
+.toast.success { border-left-color: var(--success); }
+.toast.error   { border-left-color: var(--danger); }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: var(--gray-bdr); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">B</div>
+    <div>
+      <div class="hdr-title">Boutique do Crédito e Consórcio</div>
+      <div class="hdr-sub">Kanban de Vendas</div>
+    </div>
+  </div>
+  <div class="conn-pill">
+    <span class="conn-dot" id="connDot"></span>
+    <span id="connLabel">Verificando...</span>
+  </div>
+</header>
+
+<!-- KPIs -->
+<div class="kpi-bar">
+  <div class="kpi"><div class="kpi-lbl">Prospects Ativos</div><div class="kpi-val" id="kpiTotal">—</div></div>
+  <div class="kpi"><div class="kpi-lbl">Pipeline Total</div><div class="kpi-val teal" id="kpiPipeline">—</div></div>
+  <div class="kpi"><div class="kpi-lbl">Em Proposta</div><div class="kpi-val" id="kpiProposta">—</div></div>
+  <div class="kpi"><div class="kpi-lbl">Valor Fechado</div><div class="kpi-val teal" id="kpiFechado">—</div></div>
+</div>
+
+<!-- FILTROS -->
+<div class="fil-bar">
+  <label>Busca:</label>
+  <input type="text" id="filterBusca" placeholder="Nome da franqueadora..." oninput="applyFilters()" />
+  <label>Segmento:</label>
+  <select id="filterSeg" onchange="applyFilters()">
+    <option value="">Todos</option>
+    <option>Alimentação e Bebidas</option>
+    <option>Saúde e Bem-estar</option>
+    <option>Varejo</option>
+    <option>Tecnologia e Educação</option>
+    <option>Serviços</option>
+    <option>Automotivo e Logística</option>
+    <option>Imobiliário e Construção</option>
+  </select>
+</div>
+
+<!-- BOARD -->
+<div class="board-wrap">
+  <div class="board" id="board"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="modalTitle">Novo Card</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Fechar">&times;</button>
+    </div>
+
+    <form class="modal-form" id="cardForm" onsubmit="handleFormSubmit(event)">
+      <input type="hidden" id="fieldId" />
+      <input type="hidden" id="fieldColuna" />
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Nome da Franqueadora <span class="req">*</span></label>
+          <input type="text" id="fieldFranqueadora" placeholder="Ex: Grupo Alimenta Brasil" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>CEO / Contato Principal</label>
+          <input type="text" id="fieldCeo" placeholder="Nome do responsável" />
+        </div>
+        <div class="form-group">
+          <label>Segmento</label>
+          <select id="fieldSegmento">
+            <option value="">Selecionar...</option>
+            <option>Alimentação e Bebidas</option>
+            <option>Saúde e Bem-estar</option>
+            <option>Varejo</option>
+            <option>Tecnologia e Educação</option>
+            <option>Serviços</option>
+            <option>Automotivo e Logística</option>
+            <option>Imobiliário e Construção</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nº de Franquias</label>
+          <input type="number" id="fieldFranquias" placeholder="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>Valor Estimado de Crédito (R$)</label>
+          <input type="number" id="fieldValor" placeholder="0" min="0" step="1000" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data de Entrada no Funil</label>
+          <input type="date" id="fieldEntrada" />
+        </div>
+        <div class="form-group">
+          <label>Data Prevista de Fechamento</label>
+          <input type="date" id="fieldFechamento" />
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Serviços Contratados / de Interesse</label>
+        <div class="chk-grid">
+          <label class="chk-item"><input type="checkbox" name="servicos" value="diagnostico" /><span>Diagnóstico financeiro</span></label>
+          <label class="chk-item"><input type="checkbox" name="servicos" value="monitoramento" /><span>Monitoramento mensal</span></label>
+          <label class="chk-item"><input type="checkbox" name="servicos" value="planejamento" /><span>Planejamento gerencial</span></label>
+          <label class="chk-item"><input type="checkbox" name="servicos" value="estruturacao" /><span>Estruturação de crédito</span></label>
+          <label class="chk-item"><input type="checkbox" name="servicos" value="ma" /><span>Preparação para M&amp;A</span></label>
+          <label class="chk-item"><input type="checkbox" name="servicos" value="tributaria" /><span>Consultoria tributária</span></label>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Próximo Passo</label>
+        <input type="text" id="fieldProxPasso" placeholder="Ex: Enviar proposta até 15/07" />
+      </div>
+
+      <div class="form-group full">
+        <label>Observações</label>
+        <textarea id="fieldObs" rows="2" placeholder="Notas livres sobre o prospect..."></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-danger" id="btnDelete" onclick="handleDelete()" style="display:none;">
+          Excluir Card
+        </button>
+        <div class="modal-footer-right">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar Card</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
