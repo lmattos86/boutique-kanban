@@ -1,13 +1,24 @@
-app = 'boutique-kanban-lm'
+# fly.toml app configuration file generated for boutique-kanban on 2026-07-03T16:52:57Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'boutique-kanban'
 primary_region = 'gru'
 
+[build]
+
 [env]
-  RAILWAY_VOLUME_MOUNT_PATH = "/data"
+  RAILWAY_VOLUME_MOUNT_PATH = '/data'
+
+[[mounts]]
+  source = 'boutique_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 3001
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
@@ -15,7 +26,4 @@ primary_region = 'gru'
   memory = '256mb'
   cpu_kind = 'shared'
   cpus = 1
-
-[[mounts]]
-  source = 'boutique_data'
-  destination = '/data'
+  memory_mb = 256
